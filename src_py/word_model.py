@@ -74,34 +74,6 @@ class WordModel:
 
         return return_runes, return_wli
 
-    def create_word_dataOLD(self, runes_index, wli_data):
-        '''
-            splits rune and wli data by word so they can be looked up in individual wordlists to we find hamming distance
-            each item of return list is passed with wordlist to hamming_funciton
-        :param runes_index: e.g.[7, 18, 20, 5, 3, 19, 18, 7]
-        :param wli_data: e.g. [[0, 3], [1, 3], [2, 3], [0, 2], [1, 2], [0, 7], [1, 7], [3, 7]]
-        :return: will give   [[7, 18, 20, 5, 3, 19, 18], [7]] , [[[0, 7], [1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7]], [[0, 7]]]
-        '''
-        nextrunes = []
-        nextwli = []
-        return_wli = []
-        return_runes = []
-        for i in range(len(runes_index)):
-            if wli_data[i][0] == 0:
-                if nextrunes:  # Check if nextrunes is not empty before appending to word_data
-                    return_runes.append(nextrunes)
-                    return_wli.append(nextwli)
-                nextwli = [wli_data[i]]
-                nextrunes = [runes_index[i]]
-            else:
-                nextwli.append(wli_data[i])
-                nextrunes.append(runes_index[i])
-        # Append the last group
-        if nextrunes:
-            return_runes.append(nextrunes)
-            return_wli.append(nextwli)
-        return return_runes,return_wli
-
     def hamming_distance_pos(self, dict_words, runes, wli, max_hd = 1):
         '''
             calc hamming distance <= max_hd
