@@ -47,7 +47,7 @@ class KeyDrag:
             pts_with_opts.append(next_pt_withopts)
         # get the wlis for each item in pts_with_opts
         wlis = [wli[counter:counter + len(key)] for counter in range(len(ct) - len(key))]
-        #assert len(pts_with_opts) == len(wlis)
+        # assert len(pts_with_opts) == len(wlis)
         # only keep unique PT (for each index)
         r = {}
         for index, item in enumerate(pts_with_opts):
@@ -159,7 +159,7 @@ class KeyDrag:
             temp_p = [list(p) for p in decrypt_func(ct_rot, key_rot)]
             # discard 'e'
             if discard_errors:
-                #temp_p2 = [np.asarray(p, dtype= np.int64) for p in temp_p if "e" not in p]
+                # temp_p2 = [np.asarray(p, dtype= np.int64) for p in temp_p if "e" not in p]
                 temp_p2 = [p for p in temp_p if "e" not in p]
             if temp_p2:
                 # untranspose

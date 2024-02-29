@@ -1,13 +1,13 @@
 import time
 import random
 import numpy as np
-import src_cython3.generate_test as gt
-import src_cython3.gematria as gem
-import src_cython3.cryption_methods_of_2_variables as cry
-import src_cython3.key_drag as key_drag
-import src_cython3.ngram_model as ngmod
-import src_cython3.word_model as wmod
-import src_cython3.numerical_methods as nm
+import src_cython.generate_test as gt
+import src_cython.gematria as gem
+import src_cython.cryption_methods_of_2_variables as cry
+import src_cython.key_drag as key_drag
+import src_cython.ngram_model as ngmod
+import src_cython.word_model as wmod
+import src_cython.numerical_methods as nm
 from operator import itemgetter
 
 tload1 = time.time()
@@ -21,12 +21,12 @@ def apply_key(decrypt_data, outputfile):
     # what to do with errors? for now, exclude them (could treat as a form of interrupter, etc.)
     discard_errors = True
     [wlis, r] = kd.drag_key(ct=decrypt_data['c_index'], key=decrypt_data['key_guess'],
-                                           wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
-                                           transpositions=decrypt_data['transpositions'],
-                                           c_and_k_directions=decrypt_data['c_and_k_directions'],
-                                           c_and_k_rotations=decrypt_data['c_and_k_rotations'],
-                                           decrypt_functions=decrypt_data['decrypt_functions'],
-                                           discard_errors=discard_errors)
+                            wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
+                            transpositions=decrypt_data['transpositions'],
+                            c_and_k_directions=decrypt_data['c_and_k_directions'],
+                            c_and_k_rotations=decrypt_data['c_and_k_rotations'],
+                            decrypt_functions=decrypt_data['decrypt_functions'],
+                            discard_errors=discard_errors)
     hit_data = []
     hit_dict = {}
     total_attempts = 0
@@ -66,7 +66,8 @@ def apply_key(decrypt_data, outputfile):
                             outputfile.write(f'{datatosave}')
                             outputfile.flush()
 
-    return  sorted(hit_data, key=itemgetter(3), reverse=True), total_attempts, tru_hits
+    return sorted(hit_data, key=itemgetter(3), reverse=True), total_attempts, tru_hits
+
 
 decrypt_data = {}
 decrypt_data['c_runes_string'] = "ᚪ ᛗᛝᛞᛡᚦᛉᛁᛗ ᛡᛞᛈᛝᚢᚹᚪᛗ ᛏᚪᛝ ᛝᚦᛡᚹᛋᚻ ᛁᚳ ᚫᛈᚫᚷᚩ ᛗᛁᚪ ᛖᚩ ᛏᚹᚩ ᚠᚣᚢᛏᛂ ᚦᛂᛠᛖᚳᚾᛠ ᚳᛠᛖ \
@@ -84,7 +85,6 @@ decrypt_data['c_runes'] = [x for x in list(decrypt_data['c_runes_string']) if x 
 decrypt_data['wli'] = []
 [[decrypt_data['wli'].append([i, len(word)]) for i, x in enumerate(word)] for word in
  decrypt_data['c_runewords']]
-
 
 decrypt_data['key_guess'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
@@ -110,9 +110,3 @@ with open('./test_5455.txt', 'w') as f:
         hits, total_attempts, tru_hits = apply_key(decrypt_data, f)
         print(
             f'This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {time.time() - apply_key_start} secs ')
-
-
-
-
-
-

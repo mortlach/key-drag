@@ -10,6 +10,7 @@ import src_py.key_drag as key_drag
 import src_py.ngram_model as ngmod
 import src_py.word_model as wmod
 
+
 # import test_score
 
 # # list of test words to generate a key
@@ -226,12 +227,12 @@ def apply_key(decrypt_data, ans_data):
     # what to do with errors? for now, exclude them (could treat as a form of interrupter, etc.)
     discard_errors = True
     [wlis, r] = kd.drag_key(ct=decrypt_data['c_index'], key=decrypt_data['key_guess'],
-                                           wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
-                                           transpositions=decrypt_data['transpositions'],
-                                           c_and_k_directions=decrypt_data['c_and_k_directions'],
-                                           c_and_k_rotations=decrypt_data['c_and_k_rotations'],
-                                           decrypt_functions=decrypt_data['decrypt_functions'],
-                                           discard_errors=discard_errors)
+                            wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
+                            transpositions=decrypt_data['transpositions'],
+                            c_and_k_directions=decrypt_data['c_and_k_directions'],
+                            c_and_k_rotations=decrypt_data['c_and_k_rotations'],
+                            decrypt_functions=decrypt_data['decrypt_functions'],
+                            discard_errors=discard_errors)
     hit_data = []
     hit_dict = {}
     total_attempts = 0
@@ -269,10 +270,9 @@ def apply_key(decrypt_data, ans_data):
                             rot_pt_s = ''.join(str(i) for i in rot_pt)
                             hit_data.append(datatosave)
                             if rot_pt_s in ans_data:
-                                #print(f'TRU HIT {this_pt_as_string}, {this_i}, {result1} {opts_for_this_pt}')
+                                # print(f'TRU HIT {this_pt_as_string}, {this_i}, {result1} {opts_for_this_pt}')
                                 tru_hits += 1
     return hit_data, total_attempts, tru_hits
-
 
 
 if __name__ == "__main__":
@@ -285,6 +285,7 @@ if __name__ == "__main__":
     counter = 0
     from cProfile import Profile
     from pstats import SortKey, Stats
+
     with Profile() as profile:
         while success_count < 100:
             counter += 1
@@ -302,14 +303,14 @@ if __name__ == "__main__":
             apply_key_end = time.time()
             for item in hits:
                 print(item)
-            print(f'{success_count}/ {counter} This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {apply_key_end-apply_key_start} secs ')
+            print(
+                f'{success_count}/ {counter} This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {apply_key_end - apply_key_start} secs ')
         for item in signal_to_noise:
             print(item)
     (
         Stats(profile)
         .strip_dirs()
         .sort_stats(SortKey.CUMULATIVE)
-    #    '''    CALLS  CUMULATIVE,    FILENAME,    LINE,    NAME,    NFL ,    PCALLS ''''
+        #    '''    CALLS  CUMULATIVE,    FILENAME,    LINE,    NAME,    NFL ,    PCALLS ''''
         .print_stats()
     )
-

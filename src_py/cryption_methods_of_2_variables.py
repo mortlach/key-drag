@@ -8,6 +8,7 @@ follow patterns when adding your own function
 
 from itertools import product
 
+
 def get_transposition_indices(text_len, transposition_key):
     '''
     define possible transpositions here, 2 obvious ones to start,
@@ -39,6 +40,7 @@ def get_gematria_rotation(data, shift, direction=''):
         return [(28 - d + shift) % 29 for d in data]
     return [(d + shift) % 29 for d in data]
 
+
 def get_all_gematria_rotations(data):
     '''
     if you know, you know
@@ -46,9 +48,9 @@ def get_all_gematria_rotations(data):
     :return:
     '''
     r = []
-    for direction in ['normal','atbash']:
+    for direction in ['normal', 'atbash']:
         for shift in range(29):
-            r.append(get_gematria_rotation(data,shift,direction))
+            r.append(get_gematria_rotation(data, shift, direction))
     return r
 
 
@@ -60,11 +62,13 @@ def zero_shift(a):
     '''
     offset = [x for x in a if type(x) == int]
     if len(offset) > 0:
-        return [ (x-offset[0]) % 29 if type(x) == int else x for x in a]
+        return [(x - offset[0]) % 29 if type(x) == int else x for x in a]
     return a
 
 
 ''' encrypt arithmetic '''
+
+
 def encrypt_p_plus_k(pt, key):
     if type(pt) == list:
         return [(p + k) % 29 for p, k in zip(pt, key)]
@@ -172,6 +176,8 @@ __decrypt_k_xor_p_to_p_data = get_decrypt_to_p_data(encrypt_k_xor_p)
 __decrypt_p_xor_k_to_p_data = get_decrypt_to_p_data(encrypt_p_xor_k)
 
 ''' pass lists of ciphertext and key to bespoke decryption functions NO ERROR CHECKING '''
+
+
 def decrypt_p_plus_k_to_p(ct, key):
     return [v for v in product(*[__decrypt_p_plus_k_to_p_data.get(tuple([c, k]), ["e"]) for c, k in zip(ct, key)])]
 
@@ -203,10 +209,13 @@ def decrypt_k_xor_p_to_p(ct, key):
 def decrypt_p_xor_k_to_p(ct, key):
     return [v for v in product(*[__decrypt_p_xor_k_to_p_data.get(tuple([c, k]), ["e"]) for c, k in zip(ct, key)])]
 
+
 ''' 
     for each method we only need consider certain objects 
     (assuming we check all rotations of any generated plaintext) 
 '''
+
+
 def get_gematria_options_for_method(df):
     if df == decrypt_p_xor_k_to_p:
         return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), range(29), repeat=1))]
@@ -224,6 +233,7 @@ def get_gematria_options_for_method(df):
         return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), range(29), repeat=1))]
     if df == decrypt_k_divide_p_to_p:
         return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), range(29), repeat=1))]
+
 
 ''' must be same order for both lists '''
 all_encrypt_methods_of_2_variables = [

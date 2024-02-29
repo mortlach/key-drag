@@ -17,7 +17,8 @@ def get_welcompilgrim_data():
     decrypt_data['decrypt_functions'] = [cry.decrypt_p_plus_k_to_p]
     decrypt_data['c_and_k_directions'], decrypt_data['c_and_k_rotations'] = cry.get_gematria_options_for_method(
         decrypt_data["decrypt_functions"][0])
-    decrypt_data['interrupters'] = list({None, gem.latin2position("F"),gem.latin2position("W"),gem.latin2position("G")})
+    decrypt_data['interrupters'] = list(
+        {None, gem.latin2position("F"), gem.latin2position("W"), gem.latin2position("G")})
     decrypt_data['transpositions'] = ['L2R']
     decrypt_data['c_and_k_directions'] = [["normal", 'atbash'], ["normal", 'normal']]
 
@@ -85,14 +86,14 @@ def get_anend_data():
     [[decrypt_data['wli'].append([i, len(word)]) for i, x in enumerate(word)] for word in
      decrypt_data['c_runewords']]
     # key is divinity
-    prime_key =[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, \
-                67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, \
-                139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, \
-                223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, \
-                293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, \
-                383, 389, 397, 401, 409, 419, 421, 431, 433, 439]
+    prime_key = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, \
+                 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, \
+                 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, \
+                 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, \
+                 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, \
+                 383, 389, 397, 401, 409, 419, 421, 431, 433, 439]
 
-    decrypt_data['key_guess'] = random.choice([prime_key[i:i+8] for i in range(len(prime_key)-8)])
+    decrypt_data['key_guess'] = random.choice([prime_key[i:i + 8] for i in range(len(prime_key) - 8)])
 
     decrypt_data['p_runes_string'] = "ᚪᚾ ᛖᚾᛞ ᚹᛁᚦᛁᚾ ᚦᛖ ᛞᛖᛖᛈ ᚹᛖᛒ ᚦᛖᚱᛖ ᛖᛉᛁᛋᛏᛋ ᚪ ᛈᚪᚷᛖ ᚦᚪᛏ ᚻᚪᛋᚻᛖᛋ ᛏᚩ ᛁᛏ ᛁᛋ ᚦᛖ \
                                       ᛞᚢᛏᚣ ᚩᚠ ᛖᚢᛖᚱᚣ ᛈᛁᛚᚷᚱᛁᛗ ᛏᚩ ᛋᛖᛖᚳ ᚩᚢᛏ ᚦᛁᛋ ᛈᚪᚷᛖ"
@@ -152,13 +153,13 @@ def apply_key(decrypt_data, ans_data):
     # what to do with errors? for now, exclude them (could treat as a form of interrupter, etc.)
     discard_errors = True
     [wlis, r] = kd.drag_key(ct=decrypt_data['c_index'], key=decrypt_data['key_guess'],
-                                           wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
-                                           transpositions=decrypt_data['transpositions'],
-                                           c_and_k_directions=decrypt_data['c_and_k_directions'],
-                                           c_and_k_rotations=decrypt_data['c_and_k_rotations'],
-                                           decrypt_functions=decrypt_data['decrypt_functions'],
-                                           discard_errors=discard_errors)
-    #assert len(pts_with_opts) == len(wlis)
+                            wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
+                            transpositions=decrypt_data['transpositions'],
+                            c_and_k_directions=decrypt_data['c_and_k_directions'],
+                            c_and_k_rotations=decrypt_data['c_and_k_rotations'],
+                            decrypt_functions=decrypt_data['decrypt_functions'],
+                            discard_errors=discard_errors)
+    # assert len(pts_with_opts) == len(wlis)
     hit_data = []
     hit_dict = {}
     total_attempts = 0
@@ -195,7 +196,7 @@ def apply_key(decrypt_data, ans_data):
 
                             rot_pt_s = ''.join(str(i) for i in rot_pt)
                             if rot_pt_s in ans_data:
-                                #print(f'TRU HIT {this_pt_as_string}, {this_i}, {result1} {opts_for_this_pt}')
+                                # print(f'TRU HIT {this_pt_as_string}, {this_i}, {result1} {opts_for_this_pt}')
                                 tru_hits += 1
                                 datatosave.append(True)
                             else:
@@ -203,10 +204,7 @@ def apply_key(decrypt_data, ans_data):
                             hit_dict[this_pt_as_string] = datatosave
                             hit_data.append(datatosave)
 
-
     return hit_data, total_attempts, tru_hits
-
-
 
 
 if __name__ == "__main__":
@@ -218,8 +216,8 @@ if __name__ == "__main__":
     ts = time.time()
     print(f'\n******** WELCOME PILGRIM TEST *********')
     decrypt_data = get_welcompilgrim_data()
-    for k,v in decrypt_data.items():
-        print(k,v)
+    for k, v in decrypt_data.items():
+        print(k, v)
     hits, total_attempts, tru_hits = apply_key(decrypt_data, decrypt_data['p_index_str'])
     for item in hits:
         print(item)
@@ -229,11 +227,10 @@ if __name__ == "__main__":
     else:
         print('FAILURE welcome pilgrim failed')
 
-
     print(f'\n******** A KOAN TEST *********')
     decrypt_data = get_akoan_data()
-    for k,v in decrypt_data.items():
-        print(k,v)
+    for k, v in decrypt_data.items():
+        print(k, v)
     hits, total_attempts, tru_hits = apply_key(decrypt_data, decrypt_data['p_index_str'])
     for item in hits:
         print(item)
@@ -245,8 +242,8 @@ if __name__ == "__main__":
 
     print(f'\n******** AN END TEST *********')
     decrypt_data = get_anend_data()
-    for k,v in decrypt_data.items():
-        print(k,v)
+    for k, v in decrypt_data.items():
+        print(k, v)
     hits, total_attempts, tru_hits = apply_key(decrypt_data, decrypt_data['p_index_str'])
     for item in hits:
         print(item)
@@ -258,5 +255,4 @@ if __name__ == "__main__":
 
     print(f'FIN, run time {time.time() - ts} seconds')
 
-    #signal_to_noise.append([tru_hits, len(hits), total_attempts])
-
+    # signal_to_noise.append([tru_hits, len(hits), total_attempts])

@@ -14,6 +14,8 @@ import src_cython.numerical_methods as nm
 from operator import itemgetter
 
 ''' loop through applying keys and testing output  '''
+
+
 def apply_key(decrypt_data, ans_data):
     # set up key-dragger
     kd = key_drag.KeyDrag()
@@ -21,12 +23,12 @@ def apply_key(decrypt_data, ans_data):
     discard_errors = True
     # drag key over all options
     [wlis, r] = kd.drag_key(ct=decrypt_data['c_index'], key=decrypt_data['key_guess'],
-                                           wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
-                                           transpositions=decrypt_data['transpositions'],
-                                           c_and_k_directions=decrypt_data['c_and_k_directions'],
-                                           c_and_k_rotations=decrypt_data['c_and_k_rotations'],
-                                           decrypt_functions=decrypt_data['decrypt_functions'],
-                                           discard_errors=discard_errors)
+                            wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
+                            transpositions=decrypt_data['transpositions'],
+                            c_and_k_directions=decrypt_data['c_and_k_directions'],
+                            c_and_k_rotations=decrypt_data['c_and_k_rotations'],
+                            decrypt_functions=decrypt_data['decrypt_functions'],
+                            discard_errors=discard_errors)
 
     # plaintext analysis
     hit_data = []
@@ -75,7 +77,6 @@ def apply_key(decrypt_data, ans_data):
     return sorted(hit_data, key=itemgetter(3), reverse=True), total_attempts, tru_hits
 
 
-
 if __name__ == "__main__":
     tload1 = time.time()
     lm1 = ngmod.NGramModel(True, False)
@@ -104,14 +105,15 @@ if __name__ == "__main__":
             apply_key_end = time.time()
             for item in hits:
                 print(item)
-            print(f'{success_count}/ {counter} This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {apply_key_end-apply_key_start} secs ')
+            print(
+                f'{success_count}/ {counter} This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {apply_key_end - apply_key_start} secs ')
         for item in signal_to_noise:
             print(item)
     (
         Stats(profile)
         .strip_dirs()
         .sort_stats(SortKey.CUMULATIVE)
-    #    '''    CALLS  CUMULATIVE,    FILENAME,    LINE,    NAME,    NFL ,    PCALLS ''''
+        #    '''    CALLS  CUMULATIVE,    FILENAME,    LINE,    NAME,    NFL ,    PCALLS ''''
         .print_stats()
     )
     print(f'{success_count} / {counter} ')

@@ -1,4 +1,4 @@
-#setup.py
+# setup.py
 from setuptools import setup
 from Cython.Build import cythonize
 from setuptools.extension import Extension
@@ -7,10 +7,11 @@ from distutils.extension import Extension
 from Cython.Distutils import build_ext
 import numpy
 
-ext_modules=[
+ext_modules = [
     Extension("numerical_methods", sources=["numerical_methods.pyx"], language='c',
               extra_compile_args=['-Ofast', '-march=native'], include_dirs=[numpy.get_include()]),
-    Extension("ngram_model", sources=["ngram_model.pyx"],language='c++',extra_compile_args=['-Ofast', '-march=native'])
+    Extension("ngram_model", sources=["ngram_model.pyx"], language='c++',
+              extra_compile_args=['-Ofast', '-march=native'])
 ]
 
 setup(

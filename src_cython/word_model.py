@@ -20,7 +20,7 @@ class WordModel:
     __all_words_index = None
     __all_words_index_np = None
 
-    def __init__(self, should_init_data = False):
+    def __init__(self, should_init_data=False):
         if should_init_data:
             self.init_data()
 
@@ -30,8 +30,8 @@ class WordModel:
         :param fp: file path
         :return: dictionary of data
         '''
-        with open(fp, mode='r',encoding='utf-8') as file:
-            return  { r[3] : [r[0], int(r[1]), int(r[4])] for r in csv.reader(file) if int(r[2]) == 1 }
+        with open(fp, mode='r', encoding='utf-8') as file:
+            return {r[3]: [r[0], int(r[1]), int(r[4])] for r in csv.reader(file) if int(r[2]) == 1}
 
     def init_data(self):
         '''
@@ -41,16 +41,23 @@ class WordModel:
         print(f'DL load word lists', end=" ")
         ts = time.time()
         WordModel.__all_words = [self.readcsvtodict('./data/1_grams/raw1grams_01.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_02.csv'), self.readcsvtodict('./data/1_grams/raw1grams_03.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_04.csv'), self.readcsvtodict('./data/1_grams/raw1grams_05.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_06.csv'), self.readcsvtodict('./data/1_grams/raw1grams_07.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_08.csv'), self.readcsvtodict('./data/1_grams/raw1grams_09.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_10.csv'), self.readcsvtodict('./data/1_grams/raw1grams_11.csv'),
-                                 self.readcsvtodict('./data/1_grams/raw1grams_12.csv'), self.readcsvtodict('./data/1_grams/raw1grams_13.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_02.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_03.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_04.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_05.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_06.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_07.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_08.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_09.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_10.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_11.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_12.csv'),
+                                 self.readcsvtodict('./data/1_grams/raw1grams_13.csv'),
                                  self.readcsvtodict('./data/1_grams/raw1grams_14.csv')]
-        WordModel.__all_words_index = [[[gem.rune2position(c) for c in word] for word in wl] for wl in WordModel.__all_words]
+        WordModel.__all_words_index = [[[gem.rune2position(c) for c in word] for word in wl] for wl in
+                                       WordModel.__all_words]
 
-        WordModel.__all_words_index_np = [np.array(x,dtype=np.int64) for x in  WordModel.__all_words_index]
+        WordModel.__all_words_index_np = [np.array(x, dtype=np.int64) for x in WordModel.__all_words_index]
 
         print(WordModel.__all_words_index[0][0])
         print(f' took {time.time() - ts} secs', end="\n")
@@ -80,7 +87,7 @@ class WordModel:
 
         return return_runes, return_wli
 
-    def hamming_distance_pos(self, dict_words, runes, wli, max_hd = 1):
+    def hamming_distance_pos(self, dict_words, runes, wli, max_hd=1):
         '''
             calc hamming distance <= max_hd
         :param dict_words: are reference words, word data
@@ -97,21 +104,21 @@ class WordModel:
                 min_hd = hd
         return min_hd
 
-    def find_min_HD(self, runes_index, wli_data, max_hd = 1):
+    def find_min_HD(self, runes_index, wli_data, max_hd=1):
         '''
         :param runes_index: list of rune-index values
         :param wli_data: list of pairs: [index-in-word, word-length]
         :param max_hd: the maximum HD allowed, otherwise return early
         :return: hamming distance
         '''
-        runesword,wliwords = self.create_word_data(runes_index, wli_data)
+        runesword, wliwords = self.create_word_data(runes_index, wli_data)
         total_hd = 0
         spare_hd = max_hd - total_hd
-        for r,w in zip(runesword,wliwords):
+        for r, w in zip(runesword, wliwords):
             # (item[1][0][1] - 1) is (wordlength-1) to get correct part of __all_words_index list
-            #rot_ptnp = np.asarray(r, dtype=np.int64)
+            # rot_ptnp = np.asarray(r, dtype=np.int64)
             dict_words = WordModel.__all_words_index[w[0][1] - 1]
-            #spare_hd += self.hamming_distance_pos(dict_words, r, w, spare_hd)
+            # spare_hd += self.hamming_distance_pos(dict_words, r, w, spare_hd)
             spare_hd += nm.hamming_distance_pos_C(dict_words, r, w, spare_hd)
             # dict_words = WordModel.__all_words_index_np[w[0][1] - 1]
             # spare_hd += nm.hamming_distance_pos_Cnp(dict_words, np.asarray(r, dtype=np.int64), w, spare_hd)
