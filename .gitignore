@@ -1,0 +1,6 @@
+*.pyc
+*.pyd
+*.c
+*.cpp
+.idea/
+*.nb
