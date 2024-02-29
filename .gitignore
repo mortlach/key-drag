@@ -3,4 +3,5 @@
 *.c
 *.cpp
 .idea/
+src_cython/build/
 *.nb
