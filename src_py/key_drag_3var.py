@@ -16,7 +16,7 @@ class KeyDrag:
         s = list(iterable)
         return chain.from_iterable(combinations(s, r) for r in range(len(s) + 1))
 
-    def drag_key(self, ct, key, wli, interrupters, transpositions, c_and_k_directions, c_and_k_rotations,
+    def drag_key(self, ct, key1, key2, wli, interrupters, transpositions, c_and_k_directions, c_and_k_rotations,
                  decrypt_functions, discard_errors=True):
         '''
 
@@ -35,10 +35,10 @@ class KeyDrag:
         '''
         pts_with_opts = []
         # loop from start of ct to end (TODO no wrap around)
-        for counter in range(len(ct) - len(key)):
+        for counter in range(len(ct) - len(key1)):
             # pass all options to each ct the key can be applied to
             # next_pt_withopts are lists of [[pt1,opts1],[pt2,opts2],[pt3,opts3],[pt4,opts4] ... ]
-            next_pt_withopts = self.apply_key_from_options(ct[counter:counter + len(key)], key,
+            next_pt_withopts = self.apply_key_from_options(ct[counter:counter + len(key1)], key1,
                                                            interrupters,
                                                            transpositions,
                                                            c_and_k_directions, c_and_k_rotations,
@@ -46,7 +46,7 @@ class KeyDrag:
                                                            discard_errors)
             pts_with_opts.append(next_pt_withopts)
         # get the wlis for each item in pts_with_opts
-        wlis = [wli[counter:counter + len(key)] for counter in range(len(ct) - len(key))]
+        wlis = [wli[counter:counter + len(key1)] for counter in range(len(ct) - len(key1))]
         # assert len(pts_with_opts) == len(wlis)
         # only keep unique PT (for each index)
         r = {}
