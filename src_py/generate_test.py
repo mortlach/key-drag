@@ -190,3 +190,118 @@ def get_test_encryption(pt_rune_string):
     decrypt_data['wli'] = test_data['wli']
     decrypt_data['key_guess'] = test_data['key_word']
     return [test_data, decrypt_data]
+
+
+
+
+
+import src_py.cryption_methods_of_3_variables as cry3
+
+
+def get_test_encryption_3V(pt_rune_string, offset):
+    ''' generates a test encryption data saved to test_data '''
+    test_data = {}
+    test_data['p_latin_string'] = pt_rune_string
+    test_data['p_runes_string'] = gem.translate_to_gematria(test_data['p_latin_string'])
+    test_data['p_runewords_string'] = test_data['p_runes_string'].split()
+    test_data['p_index'] = [gem.rune2position(x) for x in list(test_data['p_runes_string']) if x != ' ']
+    # this odditiy is used to check if we get a valid plaintext
+    test_data['p_index_str'] = ''.join(str(i) for i in test_data['p_index'])
+    test_data['p_latin'] = [gem.rune2latincanon(x) for x in list(test_data['p_runes_string']) if x != ' ']
+    test_data['p_runes'] = [x for x in list(test_data['p_runes_string']) if x != ' ']
+    test_data['wli'] = []
+    [[test_data['wli'].append([i, len(word)]) for i, x in enumerate(word)] for word in
+     test_data['p_runewords_string']]
+
+    # set cipher options
+    possible_interrupters = [None, 0, 5, 6, 7, 8, 11, 12, 13, 14, 17, 19, 20, 21, 22, 23, 25, 26, 27, 28]
+    u = set.intersection(set(possible_interrupters), set(test_data['p_index']))
+    # Encryption Options
+    test_data["interrupter"] = random.choice(list(u) + [None])
+    test_data["interrupter_latin"] = gem.position2latincanon(test_data["interrupter"])
+    test_data["k1_gematria_shift"] = random.choice(range(29))
+    test_data["k2_gematria_shift"] = random.choice(range(29))
+    test_data["p_gematria_shift"] = random.choice(range(29))
+    test_data["enc_function"] = random.choice([cry3.encrypt_p_multiply_k1_add_k2])
+    test_data["p_gematria_direction"] = random.choice(['normal', 'atbash'])
+    test_data["k1_gematria_direction"] = random.choice(['normal', 'atbash'])
+    test_data["k2_gematria_direction"] = random.choice(['normal', 'atbash'])
+    #test_data["transposition"] = random.choice(['L2R', 'R2L'])
+    # test_data["enc_function"] = cry.encrypt_p_plus_k
+    test_data["p_gematria_direction"] = 'normal'
+    test_data["k1_gematria_direction"] = 'normal'
+    test_data["k2_gematria_direction"] = 'normal'
+    test_data["transposition"] = 'L2R'
+    test_data["k1_gematria_shift"] = 0
+    test_data["k2_gematria_shift"] = 0
+    test_data["p_gematria_shift"] = 0
+
+    #
+    # ENCRYPTION
+    #
+    # first remove interrupters
+    test_data['interrupter_index'] = [i for i, p in enumerate(test_data['p_index']) if p == test_data['interrupter']]
+    test_data['interrupted_p_index'] = [p for i, p in enumerate(test_data['p_index']) if
+                                        i not in test_data['interrupter_index']]
+    #
+    # NEXT  apply transposition to plaintext
+    test_data['transposition_indices'] = cry.get_transposition_indices(len(test_data['interrupted_p_index']),
+                                                                       test_data['transposition'])
+    test_data['transposed_interrupted_p_index'] = [test_data['interrupted_p_index'][i] for i in
+                                                   test_data['transposition_indices']]
+    #
+    # Get key parameters
+    test_data['k1_raw'] = random.choices(range(29), k=len(test_data['transposed_interrupted_p_index']))
+
+
+    #test_data['k2_raw'] = random.choices(range(29), k=len(test_data['transposed_interrupted_p_index']))
+
+    # a word a sa key
+    test_data['key_word'] = get_random_keyword(10, 14)
+    # the prim esequenc eas key
+    test_data['key_word'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
+
+    test_data['key_word_start_index'] = random.choice(
+        range(0, len(test_data['k_raw']) - len(test_data['key_word']) - 1))
+    # test_data['key_word_start_index'] = 0
+    for i, p in enumerate(test_data['key_word']):
+        test_data['k_raw'][test_data['key_word_start_index'] + i] = test_data['key_word'][i]
+    #
+    # rotate the plaintext / key
+    test_data['p_to_encrypt'] = cry.get_gematria_rotation(test_data['transposed_interrupted_p_index'],
+                                                          test_data['p_gematria_shift'],
+                                                          test_data['p_gematria_direction'])
+    test_data['k1_to_encrypt'] = cry.get_gematria_rotation(test_data['k1_raw'], test_data['k1_gematria_shift'],
+                                                          test_data['k1_gematria_direction'])
+    #
+    # apply encryption function
+    here
+    test_data['c_raw'] = test_data['enc_function'](test_data['p_to_encrypt'], test_data['k_to_encrypt'])
+    #
+    # un-transpose
+    test_data['c_raw_untranspose'] = [test_data['c_raw'][i] for i in test_data['transposition_indices']]
+    #
+    # re-insert interrupters
+    test_data['c_raw_untranspose_add_interrupters'] = list(test_data['c_raw_untranspose'])
+    for i in test_data['interrupter_index']:
+        test_data['c_raw_untranspose_add_interrupters'].insert(i, test_data['interrupter'])
+    #
+    # final cipher text lists
+    test_data['c_index'] = test_data['c_raw_untranspose_add_interrupters']
+    test_data['c_latin'] = [gem.position2latincanon(x) for x in test_data['c_index']]
+    test_data['c_rune'] = [gem.position2rune(x) for x in test_data['c_index']]
+
+    assert len(test_data['c_rune']) == len(test_data['p_index'])
+
+    # Decryption Attempts, need Cipher Text With word length info  and Key_guesses
+    decrypt_data = {}
+    decrypt_data['decrypt_functions'] = [cry.encrypt_to_decrypt[test_data['enc_function']]]
+    decrypt_data['c_and_k_directions'], decrypt_data['c_and_k_rotations'] = cry.get_gematria_options_for_method(
+        decrypt_data["decrypt_functions"][0])
+    decrypt_data['interrupters'] = list({None, test_data['interrupter']})
+    decrypt_data['transpositions'] = [test_data['transposition']]
+    # decrypt_data['c_and_k_directions'] = [["normal", 'atbash'], ["normal", 'normal']]
+    decrypt_data['c_index'] = test_data['c_index']
+    decrypt_data['wli'] = test_data['wli']
+    decrypt_data['key_guess'] = test_data['key_word']
+    return [test_data, decrypt_data]
