@@ -42,6 +42,10 @@ class NGramModel:
         if load_w4:
             self.load_raw_tm_data_w4()
 
+    def are_w3w4_loaded(self):
+        return [NGramModel.__w3_loaded, NGramModel.__w4_loaded]
+
+
     def load_raw_tm_data_w3(self):
         if not NGramModel.__w3_loaded:
             t1 = time.time()
@@ -92,6 +96,13 @@ class NGramModel:
         mean_dif = [
             sum(rw3) / (len(rw3) * NGramModel.__w3_sd.get(len(rw3), NGramModel.__w3_sd[12])),
             sum(rw4) / (len(rw4) * NGramModel.__w4_sd.get(len(rw4), NGramModel.__w4_sd[12])),
+        ]
+        return mean_dif
+
+    def get_distance_from_mean_w4(self, rune, wli):
+        [rw4] = [self.get_logprob_wlir_data_w4(rune, wli, True)]
+        mean_dif = [
+            sum(rw4) / (len(rw3) * NGramModel.__w4_sd.get(len(rw3), NGramModel.__w4_sd[12])),
         ]
         return mean_dif
 

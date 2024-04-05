@@ -17,9 +17,8 @@ def encrypt_p_multiply_k1_add_k2(pt, key1, key2):
 def encrypt_p_i_multiply_k_i_add_cMinus1(pt, key1, offset):
     ct = [-1] * len(pt)
     ct[0] = pt[0] * key1[0] + offset
-    if type(pt) == list:
-        for i in range(2,len(pt)):
-            ct[i] = pt[i] * key1[i] + ct[i-1]
+    for i in range(1,len(pt)):
+        ct[i] = pt[i] * key1[i] + ct[i-1]
     return [x % 29 for x in ct]
 
 def get_decrypt_to_p_data(encryption_function_of_p_and_k):
@@ -43,6 +42,10 @@ __decrypt_p_multiply_k1_add_k2_to_p_data = get_decrypt_to_p_data(encrypt_p_multi
 #     print(f'{k} = {v}')
 ''' pass lists of ciphertext and key to bespoke decryption functions NO ERROR CHECKING '''
 def decrypt_p_plus_k_to_p(ct, key1, key2):
+    # test = []
+    # for c, k1, k2 in zip(ct, key1, key2):
+    #     aaa = __decrypt_p_multiply_k1_add_k2_to_p_data.get(tuple([c, k1, k2]), ["e"])
+    #     test.append(aaa)
     return [v for v in product(
         *[__decrypt_p_multiply_k1_add_k2_to_p_data.get(tuple([c, k1, k2]), ["e"]) for c, k1, k2 in
           zip(ct, key1, key2)])]
@@ -50,7 +53,8 @@ def decrypt_p_plus_k_to_p(ct, key1, key2):
 
 def get_gematria_options_for_method(df):
     if df == decrypt_p_plus_k_to_p:
-        return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), repeat=2))]
+        #return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), repeat=2))]
+        return [[["normal", 'normal']], list(product(range(29), range(29), repeat=1))]
 
 
 def get_gematria_rotation(data, shift, direction=''):

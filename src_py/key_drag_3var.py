@@ -43,7 +43,8 @@ class KeyDrag:
                 offset = 0
             else:
                 offset = ct[counter-1]
-
+            # if counter == 11: # debug
+            #     print(counter)
             next_pt_withopts = self.apply_key_from_options(ct[counter:counter + len(key1)],
                                                            key1,
                                                            key2,
@@ -152,6 +153,11 @@ class KeyDrag:
         :return:
         '''
         # each possible interrupter
+        # if k_rot == 0:
+        #     if c_rot == 0:
+        #         if k_dir == "normal":
+        #             if ct_dir == "normal":
+        #                 print("test")
         ct_int_pos = [i for i, p in enumerate(ct) if p == inter]
         # all subsets of ct_int_pos
         int_positions = list(self.powerset(ct_int_pos))
@@ -177,7 +183,6 @@ class KeyDrag:
             l2 = len(key1_rot)
             l3 = len(key2_rot)
             # what offset to use ? could get complex with interrupters ....
-
 
             temp_p = [list(p) for p in decrypt_func(ct_rot, key1_rot, key2_rot)]
             # discard 'e'

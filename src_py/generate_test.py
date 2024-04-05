@@ -218,6 +218,7 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     u = set.intersection(set(possible_interrupters), set(test_data['p_index']))
     # Encryption Options
     test_data["interrupter"] = random.choice(list(u) + [None])
+    test_data["interrupter"] = None
     test_data["interrupter_latin"] = gem.position2latincanon(test_data["interrupter"])
     test_data["k1_gematria_shift"] = random.choice(range(29))
     test_data["k2_gematria_shift"] = random.choice(range(29))
@@ -226,15 +227,15 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     test_data["p_gematria_direction"] = random.choice(['normal', 'atbash'])
     test_data["k1_gematria_direction"] = random.choice(['normal', 'atbash'])
     test_data["k2_gematria_direction"] = random.choice(['normal', 'atbash'])
-    #test_data["transposition"] = random.choice(['L2R', 'R2L'])
+    test_data["transposition"] = random.choice(['L2R', 'R2L'])
     # test_data["enc_function"] = cry.encrypt_p_plus_k
-    test_data["p_gematria_direction"] = 'normal'
-    test_data["k1_gematria_direction"] = 'normal'
-    test_data["k2_gematria_direction"] = 'normal'
-    test_data["transposition"] = 'L2R'
-    test_data["k1_gematria_shift"] = 0
-    test_data["k2_gematria_shift"] = 0
-    test_data["p_gematria_shift"] = 0
+    #test_data["p_gematria_direction"] = 'atbash'
+    #test_data["k1_gematria_direction"] = 'normal'
+    #test_data["k2_gematria_direction"] = 'normal'
+    #test_data["transposition"] = 'L2R'
+    #test_data["k1_gematria_shift"] = 0
+    #test_data["k2_gematria_shift"] = 0
+    #test_data["p_gematria_shift"] = 0
     if offset:
         test_data["offset"] = offset
     else:
@@ -263,10 +264,12 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     # a word a sa key
     test_data['key_word'] = get_random_keyword(10, 14)
     # the prim esequenc eas key
-    test_data['key_word'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
+    #test_data['key_word'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
     test_data['key_word_start_index'] = random.choice(
         range(0, len(test_data['k1_raw']) - len(test_data['key_word']) - 1))
+    #test_data['key_word_start_index'] = 11
+
     # test_data['key_word_start_index'] = 0
     for i, p in enumerate(test_data['key_word']):
         test_data['k1_raw'][test_data['key_word_start_index'] + i] = test_data['key_word'][i]
@@ -310,6 +313,7 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     decrypt_data['c_index'] = test_data['c_index']
     decrypt_data['wli'] = test_data['wli']
     decrypt_data['key1_guess'] = test_data['key_word']
+    decrypt_data['key_word_start_index'] = test_data['key_word_start_index']
 
     if test_data["enc_function"] == cry3.encrypt_p_multiply_k1_add_k2:
          decrypt_data['key2_guess'] = "ctminus1"

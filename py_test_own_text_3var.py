@@ -48,10 +48,20 @@ def apply_key(decrypt_data, ans_data):
                 total_attempts += 1
                 # two language test  tests, first on ngrams
                 lm_threshold = -3
-                result1 = lm1.get_distance_from_mean_w3w4(rot_pt, wli_at_this_index)
+                result1 = False
+                if all(lm1.are_w3w4_loaded()):
+                    result1 = lm1.get_distance_from_mean_w3w4(rot_pt, wli_at_this_index)
+                elif lm1.are_w3w4_loaded()[0]:
+                    result1 = lm1.get_distance_from_mean_w3(rot_pt, wli_at_this_index)
+                elif lm1.are_w3w4_loaded()[1]:
+                    result1 = lm1.get_distance_from_mean_w4(rot_pt, wli_at_this_index)
+                else:
+                    input("ERROR CANT SCORE")
+
                 all_neg = all([x > lm_threshold for x in result1])
+
                 if all_neg:
-                    # 2nd tets on word
+                    # 2nd test on word
                     result2 = lm2.find_min_HD(rot_pt, wli_at_this_index)
                     max_hd = 1
                     if result2 <= max_hd:
@@ -77,7 +87,7 @@ if __name__ == "__main__":
     signal_to_noise = []
     counter = 0
 
-    while success_count < 2:
+    while success_count < 100:
         counter += 1
         print(f'\n***** ATTEMPT {counter} ****** ')
         ## setup a test encryption using current methods / assumptions nad options ##
