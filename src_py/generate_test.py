@@ -142,9 +142,9 @@ def get_test_encryption(pt_rune_string):
     # Get key parameters
     test_data['k_raw'] = random.choices(range(29), k=len(test_data['transposed_interrupted_p_index']))
 
-    # a word a sa key
+    # a word as a key
     test_data['key_word'] = get_random_keyword(10, 14)
-    # the prim esequenc eas key
+    # the prime sequence as key
     test_data['key_word'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
     test_data['key_word_start_index'] = random.choice(
@@ -198,7 +198,7 @@ def get_test_encryption(pt_rune_string):
 import src_py.cryption_methods_of_3_variables as cry3
 
 
-def get_test_encryption_3V(pt_rune_string, offset):
+def get_test_encryption_3V(pt_rune_string, offset=None):
     ''' generates a test encryption data saved to test_data '''
     test_data = {}
     test_data['p_latin_string'] = pt_rune_string
@@ -235,6 +235,10 @@ def get_test_encryption_3V(pt_rune_string, offset):
     test_data["k1_gematria_shift"] = 0
     test_data["k2_gematria_shift"] = 0
     test_data["p_gematria_shift"] = 0
+    if offset:
+        test_data["offset"] = offset
+    else:
+        test_data["offset"] = 0
 
     #
     # ENCRYPTION
@@ -262,10 +266,10 @@ def get_test_encryption_3V(pt_rune_string, offset):
     test_data['key_word'] = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71]
 
     test_data['key_word_start_index'] = random.choice(
-        range(0, len(test_data['k_raw']) - len(test_data['key_word']) - 1))
+        range(0, len(test_data['k1_raw']) - len(test_data['key_word']) - 1))
     # test_data['key_word_start_index'] = 0
     for i, p in enumerate(test_data['key_word']):
-        test_data['k_raw'][test_data['key_word_start_index'] + i] = test_data['key_word'][i]
+        test_data['k1_raw'][test_data['key_word_start_index'] + i] = test_data['key_word'][i]
     #
     # rotate the plaintext / key
     test_data['p_to_encrypt'] = cry.get_gematria_rotation(test_data['transposed_interrupted_p_index'],
@@ -275,8 +279,10 @@ def get_test_encryption_3V(pt_rune_string, offset):
                                                           test_data['k1_gematria_direction'])
     #
     # apply encryption function
-    here
-    test_data['c_raw'] = test_data['enc_function'](test_data['p_to_encrypt'], test_data['k_to_encrypt'])
+    #here
+    test_data['c_raw'] = cry3.encrypt_to_encrypt_plaintext[test_data['enc_function']](test_data['p_to_encrypt'],
+                                                                                      test_data['k1_to_encrypt'],
+                                                                                      test_data['offset'])
     #
     # un-transpose
     test_data['c_raw_untranspose'] = [test_data['c_raw'][i] for i in test_data['transposition_indices']]
@@ -295,13 +301,18 @@ def get_test_encryption_3V(pt_rune_string, offset):
 
     # Decryption Attempts, need Cipher Text With word length info  and Key_guesses
     decrypt_data = {}
-    decrypt_data['decrypt_functions'] = [cry.encrypt_to_decrypt[test_data['enc_function']]]
-    decrypt_data['c_and_k_directions'], decrypt_data['c_and_k_rotations'] = cry.get_gematria_options_for_method(
+    decrypt_data['decrypt_functions'] = [cry3.encrypt_to_decrypt[test_data['enc_function']]]
+    decrypt_data['c_and_k_directions'], decrypt_data['c_and_k_rotations'] = cry3.get_gematria_options_for_method(
         decrypt_data["decrypt_functions"][0])
     decrypt_data['interrupters'] = list({None, test_data['interrupter']})
     decrypt_data['transpositions'] = [test_data['transposition']]
     # decrypt_data['c_and_k_directions'] = [["normal", 'atbash'], ["normal", 'normal']]
     decrypt_data['c_index'] = test_data['c_index']
     decrypt_data['wli'] = test_data['wli']
-    decrypt_data['key_guess'] = test_data['key_word']
+    decrypt_data['key1_guess'] = test_data['key_word']
+
+    if test_data["enc_function"] == cry3.encrypt_p_multiply_k1_add_k2:
+         decrypt_data['key2_guess'] = "ctminus1"
+
+    decrypt_data['key1_guess'] = test_data['key_word']
     return [test_data, decrypt_data]

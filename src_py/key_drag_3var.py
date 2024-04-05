@@ -38,12 +38,23 @@ class KeyDrag:
         for counter in range(len(ct) - len(key1)):
             # pass all options to each ct the key can be applied to
             # next_pt_withopts are lists of [[pt1,opts1],[pt2,opts2],[pt3,opts3],[pt4,opts4] ... ]
-            next_pt_withopts = self.apply_key_from_options(ct[counter:counter + len(key1)], key1,
+
+            if counter == 0:
+                offset = 0
+            else:
+                offset = ct[counter-1]
+
+            next_pt_withopts = self.apply_key_from_options(ct[counter:counter + len(key1)],
+                                                           key1,
+                                                           key2,
+                                                           offset,
                                                            interrupters,
                                                            transpositions,
-                                                           c_and_k_directions, c_and_k_rotations,
+                                                           c_and_k_directions,
+                                                           c_and_k_rotations,
                                                            decrypt_functions,
                                                            discard_errors)
+
             pts_with_opts.append(next_pt_withopts)
         # get the wlis for each item in pts_with_opts
         wlis = [wli[counter:counter + len(key1)] for counter in range(len(ct) - len(key1))]
@@ -80,7 +91,7 @@ class KeyDrag:
             found_plaintext = found_plaintext + (''.join(["_"] * (this_wli[-1][1] - this_wli[-1][0] - 1)))
         return found_plaintext
 
-    def apply_key_from_options(self, ct, key, interrupters, transpositions, c_and_k_directions, c_and_k_rotations,
+    def apply_key_from_options(self, ct, key1, key2, offset, interrupters, transpositions, c_and_k_directions, c_and_k_rotations,
                                decrypt_functions, discard_errors=True):
         # for this ciphertext fragment no point checking interrupters that are not present
         interrupters_cut = [None] + [i for i in interrupters if i in ct]
@@ -89,7 +100,10 @@ class KeyDrag:
                           decrypt_functions, repeat=1)
         pts_with_opts = []
         for o in options:
-            pts_from_decryption = self.do_the_decrypt(ct=ct, key=key,
+            pts_from_decryption = self.do_the_decrypt(ct=ct,
+                                                      key1=key1,
+                                                      key2=key2,
+                                                      offset = offset,
                                                       ct_dir=o[0][0],
                                                       k_dir=o[0][1],
                                                       c_rot=o[1][0],
@@ -123,7 +137,7 @@ class KeyDrag:
             return [(x - offset[0]) % 29 if type(x) == int else x for x in a]
         return a
 
-    def do_the_decrypt(self, ct, key, ct_dir, c_rot, k_dir, k_rot, inter, trans, decrypt_func, discard_errors=True):
+    def do_the_decrypt(self, ct, key1, key2 , offset, ct_dir, c_rot, k_dir, k_rot, inter, trans, decrypt_func, discard_errors=True):
         '''
             create PT from these options, apply all options, decrypt, return complete pt
         :param ct:
@@ -154,9 +168,18 @@ class KeyDrag:
             ct_transposed = [ct_interrupter[i] for i in transc]
             # rotate
             ct_rot = self.get_gematria_rotation(ct_transposed, c_rot, ct_dir)
-            key_rot = self.get_gematria_rotation(key, k_rot, k_dir)[len(this_int_pos):]
+            key1_rot = self.get_gematria_rotation(key1, k_rot, k_dir)[len(this_int_pos):]
+
+            if key2 == "ctminus1":
+                key2_rot = [offset] + ct_rot[:-1]
             # decrypt, this creates a list of (potentially) multiple PTs
-            temp_p = [list(p) for p in decrypt_func(ct_rot, key_rot)]
+            l1 = len(ct_rot)
+            l2 = len(key1_rot)
+            l3 = len(key2_rot)
+            # what offset to use ? could get complex with interrupters ....
+
+
+            temp_p = [list(p) for p in decrypt_func(ct_rot, key1_rot, key2_rot)]
             # discard 'e'
             if discard_errors:
                 # temp_p2 = [np.asarray(p, dtype= np.int64) for p in temp_p if "e" not in p]

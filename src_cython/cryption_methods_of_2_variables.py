@@ -216,8 +216,6 @@ def decrypt_p_xor_k_to_p(ct, key):
     for each method we only need consider certain objects 
     (assuming we check all rotations of any generated plaintext) 
 '''
-
-
 def get_gematria_options_for_method(df):
     if df == decrypt_p_xor_k_to_p:
         return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), range(29), repeat=1))]

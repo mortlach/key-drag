@@ -19,7 +19,7 @@ def apply_key(decrypt_data, ans_data):
     discard_errors = True
     [wlis, r] = kd.drag_key(ct=decrypt_data['c_index'],
                             key1=decrypt_data['key1_guess'],
-                            key2=decrypt_data['key1_guess'],
+                            key2=decrypt_data['key2_guess'],
                             wli=decrypt_data['wli'], interrupters=decrypt_data['interrupters'],
                             transpositions=decrypt_data['transpositions'],
                             c_and_k_directions=decrypt_data['c_and_k_directions'],
@@ -70,19 +70,19 @@ def apply_key(decrypt_data, ans_data):
 
 if __name__ == "__main__":
     tload1 = time.time()
-    lm1 = ngmod.NGramModel(True, True)
+    lm1 = ngmod.NGramModel(True, False)
     lm2 = wmod.WordModel(True)
     failed_count = 0
     success_count = 0
     signal_to_noise = []
     counter = 0
 
-    while success_count < 1:
+    while success_count < 2:
         counter += 1
         print(f'\n***** ATTEMPT {counter} ****** ')
         ## setup a test encryption using current methods / assumptions nad options ##
         pt_test = "Welcome welcome pilgrim to the great journey toward the end of all things"
-        [test_data, decrypt_data] = gt.get_test_encryption(pt_test)
+        [test_data, decrypt_data] = gt.get_test_encryption_3V(pt_test)
         for k, v in test_data.items():
             print(f'{k} = {v}')
         apply_key_start = time.time()
@@ -97,7 +97,7 @@ if __name__ == "__main__":
             f'{success_count}/ {counter} This iteration found {tru_hits} / {len(hits)}  / {total_attempts} Attempts {apply_key_end - apply_key_start} secs ')
     for item in signal_to_noise:
         print(item)
-
+    print("FINISHED")
 
 
     from cProfile import Profile
