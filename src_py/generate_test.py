@@ -218,7 +218,7 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     u = set.intersection(set(possible_interrupters), set(test_data['p_index']))
     # Encryption Options
     test_data["interrupter"] = random.choice(list(u) + [None])
-    test_data["interrupter"] = None
+    #test_data["interrupter"] = None
     test_data["interrupter_latin"] = gem.position2latincanon(test_data["interrupter"])
     test_data["k1_gematria_shift"] = random.choice(range(29))
     test_data["k2_gematria_shift"] = random.choice(range(29))
@@ -257,7 +257,6 @@ def get_test_encryption_3V(pt_rune_string, offset=None):
     #
     # Get key parameters
     test_data['k1_raw'] = random.choices(range(29), k=len(test_data['transposed_interrupted_p_index']))
-
 
     #test_data['k2_raw'] = random.choices(range(29), k=len(test_data['transposed_interrupted_p_index']))
 

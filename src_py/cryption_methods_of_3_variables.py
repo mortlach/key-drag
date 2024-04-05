@@ -41,7 +41,8 @@ __decrypt_p_multiply_k1_add_k2_to_p_data = get_decrypt_to_p_data(encrypt_p_multi
 # for k,v in __decrypt_p_multiply_k1_add_k2_to_p_data.items():
 #     print(f'{k} = {v}')
 ''' pass lists of ciphertext and key to bespoke decryption functions NO ERROR CHECKING '''
-def decrypt_p_plus_k_to_p(ct, key1, key2):
+#def decrypt_p_plus_k_to_p(ct, key1, key2):
+def decrypt_p_multiply_k1_add_k2_to_p(ct, key1, key2):
     # test = []
     # for c, k1, k2 in zip(ct, key1, key2):
     #     aaa = __decrypt_p_multiply_k1_add_k2_to_p_data.get(tuple([c, k1, k2]), ["e"])
@@ -52,7 +53,7 @@ def decrypt_p_plus_k_to_p(ct, key1, key2):
 
 
 def get_gematria_options_for_method(df):
-    if df == decrypt_p_plus_k_to_p:
+    if df == decrypt_p_multiply_k1_add_k2_to_p:
         #return [list(product(["normal", 'atbash'], repeat=2)), list(product(range(29), repeat=2))]
         return [[["normal", 'normal']], list(product(range(29), range(29), repeat=1))]
 
@@ -86,7 +87,7 @@ all_encrypt_methods_of_3_variables = [encrypt_p_multiply_k1_add_k2]
 ''' must be same order with above list '''
 all_encrypt_plaintext_methods_of_3_variables = [encrypt_p_i_multiply_k_i_add_cMinus1]
 ''' must be same order with above list '''
-all_decrypt_to_p_methods_of_3_variables = [decrypt_p_plus_k_to_p]
+all_decrypt_to_p_methods_of_3_variables = [decrypt_p_multiply_k1_add_k2_to_p]
 
 
 ''' used to automatically pick correct opposite function '''
